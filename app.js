@@ -16,7 +16,7 @@ app.get("/boards", async (req, res) => {
     const boards = await prisma.board.findMany({ include: { cards: true } })
     res.json(boards)
   } catch (e) {
-    res.status(500).json({ error: "Failed to fetch boards" })
+    res.status(500).json({ error: `Failed to fetch boards: ${e}` })
   }
 })
 
@@ -27,10 +27,10 @@ app.get("/boards/:id", async (req, res) => {
       where: { id: Number(req.params.id) },
       include: { cards: true },
     })
-    if (!board) return res.status(404).json({ error: "Board not found" })
+    if (!board) return res.status(404).json({ error: `Board not found": ${e}` })
     res.json(board)
   } catch (e) {
-    res.status(500).json({ error: "Failed to fetch board" })
+    res.status(500).json({ error: `Failed to fetch board: ${e}` })
   }
 })
 
@@ -47,7 +47,7 @@ app.post("/boards", async (req, res) => {
     })
     res.status(201).json(board)
   } catch (e) {
-    res.status(400).json({ error: "Failed to create board" })
+    res.status(400).json({ error: `Failed to create board: ${e}` })
   }
 })
 
@@ -64,7 +64,7 @@ app.put("/boards/:id", async (req, res) => {
     })
     res.json(board)
   } catch (e) {
-    res.status(400).json({ error: "Failed to update board" })
+    res.status(400).json({ error: `Failed to update board: ${e}` })
   }
 })
 
@@ -74,7 +74,7 @@ app.delete("/boards/:id", async (req, res) => {
     await prisma.board.delete({ where: { id: Number(req.params.id) } })
     res.status(204).end()
   } catch (e) {
-    res.status(400).json({ error: "Failed to delete board" })
+    res.status(400).json({ error: `Failed to delete board: ${e}` })
   }
 })
 
@@ -86,7 +86,7 @@ app.get("/cards", async (req, res) => {
     const cards = await prisma.card.findMany({ include: { board: true } })
     res.json(cards)
   } catch (e) {
-    res.status(500).json({ error: "Failed to fetch cards" })
+    res.status(500).json({ error: `Failed to fetch cards: ${e}` })
   }
 })
 
@@ -97,10 +97,10 @@ app.get("/cards/:id", async (req, res) => {
       where: { id: Number(req.params.id) },
       include: { board: true },
     })
-    if (!card) return res.status(404).json({ error: "Card not found" })
+    if (!card) return res.status(404).json({ error: `Card not found": ${e}` })
     res.json(card)
   } catch (e) {
-    res.status(500).json({ error: "Failed to fetch card" })
+    res.status(500).json({ error: `Failed to fetch card: ${e}` })
   }
 })
 
@@ -113,7 +113,7 @@ app.post("/cards", async (req, res) => {
     })
     res.status(201).json(card)
   } catch (e) {
-    res.status(400).json({ error: "Failed to create card" })
+    res.status(400).json({ error: `Failed to create card: ${e}` })
   }
 })
 
