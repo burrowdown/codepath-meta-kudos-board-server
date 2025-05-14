@@ -1,9 +1,11 @@
 const express = require("express")
+const cors = require("cors")
 const { PrismaClient } = require("./generated/prisma")
 
 const prisma = new PrismaClient()
 const app = express()
 app.use(express.json())
+app.use(cors())
 
 // NOTE: Copilot wrote all of this, it worked on the first try
 // and it freaks me out that that's possible.
