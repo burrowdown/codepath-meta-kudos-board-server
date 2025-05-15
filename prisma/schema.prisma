@@ -14,23 +14,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// model User {
-//   id        Int   @id @default(autoincrement())
-//   name      String?
-//   email     String?  @unique
-//   password  String?
-//   boards    Board[]
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
-
 model Board {
   id        Int   @id @default(autoincrement())
   title     String
   category  Category
   author    String?
-  // author    User?     @relation(fields: [authorId], references: [id])
-  // authorId  Int?
   cards     Card[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -45,6 +33,8 @@ enum Category {
 model Card {
   id        Int   @id @default(autoincrement())
   text      String
+  author    String?
+  isPinned  Boolean @default(false)
   gifUrl    String
   board     Board    @relation(fields: [boardId], references: [id])
   boardId   Int

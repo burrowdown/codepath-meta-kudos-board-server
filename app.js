@@ -9,6 +9,9 @@ app.use(cors())
 
 // NOTE: Copilot wrote all of this, it worked on the first try
 // and it freaks me out that that's possible.
+// All I changed was adding the error objects to the failure responses,
+// for my own debugging purposes.
+// And I took out some endpoints I wasn't going to use.
 
 // --- Board Endpoints ---
 
@@ -29,7 +32,7 @@ app.get("/boards/:id", async (req, res) => {
       where: { id: Number(req.params.id) },
       include: { cards: true },
     })
-    if (!board) return res.status(404).json({ error: `Board not found": ${e}` })
+    if (!board) return res.status(404).json({ error: `Board not found` })
     res.json(board)
   } catch (e) {
     res.status(500).json({ error: `Failed to fetch board: ${e}` })
@@ -50,23 +53,6 @@ app.post("/boards", async (req, res) => {
     res.status(201).json(board)
   } catch (e) {
     res.status(400).json({ error: `Failed to create board: ${e}` })
-  }
-})
-
-// Update a board
-app.put("/boards/:id", async (req, res) => {
-  try {
-    const { title, category, author } = req.body
-    const updateData = { title, category }
-    if (author !== undefined) updateData.author = author // Only update author if provided
-
-    const board = await prisma.board.update({
-      where: { id: Number(req.params.id) },
-      data: updateData,
-    })
-    res.json(board)
-  } catch (e) {
-    res.status(400).json({ error: `Failed to update board: ${e}` })
   }
 })
 
@@ -92,26 +78,12 @@ app.get("/cards", async (req, res) => {
   }
 })
 
-// Get a single card by ID
-app.get("/cards/:id", async (req, res) => {
-  try {
-    const card = await prisma.card.findUnique({
-      where: { id: Number(req.params.id) },
-      include: { board: true },
-    })
-    if (!card) return res.status(404).json({ error: `Card not found": ${e}` })
-    res.json(card)
-  } catch (e) {
-    res.status(500).json({ error: `Failed to fetch card: ${e}` })
-  }
-})
-
 // Create a new card
 app.post("/cards", async (req, res) => {
   try {
-    const { text, gifUrl, boardId } = req.body
+    const { text, author, gifUrl, boardId } = req.body
     const card = await prisma.card.create({
-      data: { text, gifUrl, boardId },
+      data: { text, author, gifUrl, boardId },
     })
     res.status(201).json(card)
   } catch (e) {
