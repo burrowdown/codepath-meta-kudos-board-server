@@ -57,9 +57,14 @@ app.post("/boards", async (req, res) => {
 })
 
 // Delete a board
+// TODO: if I make another migration, change this back and add a cascade delete to the schema
 app.delete("/boards/:id", async (req, res) => {
   try {
-    await prisma.board.delete({ where: { id: Number(req.params.id) } })
+    const boardId = Number(req.params.id)
+    // Delete all cards for this board first
+    await prisma.card.deleteMany({ where: { boardId } })
+    // Now delete the board
+    await prisma.board.delete({ where: { id: boardId } })
     res.status(204).end()
   } catch (e) {
     res.status(400).json({ error: `Failed to delete board: ${e}` })
