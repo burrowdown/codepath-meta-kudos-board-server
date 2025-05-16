@@ -99,10 +99,10 @@ app.post("/cards", async (req, res) => {
 // Update a card
 app.put("/cards/:id", async (req, res) => {
   try {
-    const { text, gifUrl, voteCount } = req.body
+    const { text, gifUrl, voteCount, isPinned } = req.body
     const card = await prisma.card.update({
       where: { id: Number(req.params.id) },
-      data: { text, gifUrl, voteCount },
+      data: { text, gifUrl, voteCount, isPinned },
     })
     res.json(card)
   } catch (e) {
